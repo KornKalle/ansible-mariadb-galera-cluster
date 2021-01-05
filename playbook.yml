@@ -3,15 +3,13 @@
   become: true
   vars:
     mariadb_pri_domain_name: "test.vagrant.local"
-  roles:
-    - role: ansible-etc-hosts
   tasks:
     - name: pre-reqs
       dnf:
         name: "{{ item }}"
         state: present
       with_items:
-        - libselinux-python
+        - python3-libselinux
       when: >
         (ansible_os_family == "RedHat" and
         ansible_distribution == "Fedora")
@@ -21,7 +19,7 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - libselinux-python
+        - python3-libselinux
       when: >
         (ansible_os_family == "RedHat" and
         ansible_distribution != "Fedora")

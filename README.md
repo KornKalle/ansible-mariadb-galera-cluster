@@ -10,7 +10,6 @@
     -   [Vagrant](#vagrant)
     -   [Role Variables](#role-variables)
     -   [Dependencies](#dependencies)
-        -   [Ansible roles](#ansible-roles)
     -   [Example Playbook](#example-playbook)
     -   [License](#license)
     -   [Author Information](#author-information)
@@ -50,10 +49,6 @@ When you are done testing tear it all down....
 [defaults/main.yml](defaults/main.yml)
 
 ## Dependencies
-
-### Ansible roles
-
--   [ansible-etc-hosts](https://github.com/mrlesmithjr/ansible-etc-hosts)
 
 ## Example Playbook
 

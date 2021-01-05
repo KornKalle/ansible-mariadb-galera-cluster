@@ -143,15 +143,6 @@ mariadb_mysql_users: []
 #     state: present (default)
 #     append_privs: no (default)
 
-# Define the primary domain name of your environment
-mariadb_pri_domain_name: "example.org"
-
-# Define smtp domain for email
-mariadb_smtp_domain_name: "{{ mariadb_pri_domain_name }}"
-
-# Define smtp server to send email through
-mariadb_smtp_server: "smtp.{{ mariadb_pri_domain_name }}"
-
 # Character sets.
 # MariaDB's defaults: latin1
 
