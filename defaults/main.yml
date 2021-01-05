@@ -156,16 +156,9 @@ mariadb_smtp_server: "smtp.{{ mariadb_pri_domain_name }}"
 # MariaDB's defaults: latin1
 
 # Role default: unset (server defaults)
-mariadb_charset_server: auto
-mariadb_collation_server: auto
-# Role default: utf8
-mariadb_charset_client: utf8
-
-# Recommended utf8 settings:
-# https://mariadb.com/kb/en/setting-character-sets-and-collations/#example-changing-the-default-character-set-to-utf-8
-# mariadb_charset_server: utf8mb4
-# mariadb_collation_server: utf8mb4_general_ci
-# mariadb_charset_client: utf8mb4
+mariadb_charset_server: utf8mb4
+mariadb_collation_server: utf8mb4_general_ci
+mariadb_charset_client: utf8mb4
 
 # InnoDB tuning
 
