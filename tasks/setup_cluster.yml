@@ -1,4 +1,15 @@
 ---
+
+- name: set wsrep Provider for galera 4 on EL 8
+  set_fact:
+    galera_wsrep_provider: "/usr/lib/galera-4/libgalera_smm.so"
+  when: ansible_os_family == "RedHat"
+
+- name: set wsrep Provider for Debian
+  set_fact:
+    galera_wsrep_provider: "/usr/lib/galera/libgalera_smm.so"
+  when: ansible_os_family == "Debian"
+
 - name: setup_cluster | checking if galera cluster setup
   stat:
     path: "/etc/galera_cluster_configured"

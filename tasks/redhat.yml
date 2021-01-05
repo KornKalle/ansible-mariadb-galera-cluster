@@ -13,7 +13,7 @@
 - name: redhat | installing pre-reqs
   yum:
     name:
-      - "MySQL-python"
+      - "python3-mysql"
       - "socat"
     state: "present"
     update_cache: yes
@@ -56,7 +56,7 @@
     name:
       - "MariaDB-server"
       - "galera"
-      - "MySQL-python"
+      - "python3-mysql"
     state: present
   become: true
   when: >
@@ -75,7 +75,7 @@
 
 - name: redhat | ensuring mariadb mysql is enabled on boot and started
   service:
-    name: "mysql"
+    name: "mariadb"
     state: "started"
     enabled: yes
   become: true
