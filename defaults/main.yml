@@ -29,11 +29,6 @@ galera_deb_db_password: "{{ mariadb_mysql_root_password }}"
 # Defines email address to receive notifications
 galera_email_notifications: "notifications@{{ mariadb_smtp_domain_name }}"
 
-# Defines if cacti monitoring should be enabled for mysql - If used. May remove later.
-galera_enable_cacti_monitoring: false
-
-galera_enable_galera_monitoring_script: false
-
 # Defines if we should enable the MariaDB repo or use version within OS repos.
 galera_enable_mariadb_repo: true
 
@@ -61,9 +56,6 @@ galera_ist_recv_addr_port: "{{ galera_wsrep_node_address_port|int + 1 }}"
 # from wsrep_node_address. You may find it useful when the node runs behind a
 # NAT or in similar cases where the public and private addresses differ.
 galera_ist_recv_bind: "{{ galera_cluster_bind_address }}"
-
-galera_monitor_script_name: "galeranotify.py"
-galera_monitor_script_path: "/etc/mysql"
 
 # Defines the which node should be considered the master in the cluster
 # Used to bootstrap cluster
