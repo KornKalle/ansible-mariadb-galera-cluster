@@ -18,7 +18,8 @@
 
 # ansible-mariadb-galera-cluster
 
-An [Ansible](https://www.ansible.com) role to install/configure a [MariaDB-Galera Cluster](https://mariadb.com/kb/en/mariadb/what-is-mariadb-galera-cluster/)
+An [Ansible](https://www.ansible.com) role to install/configure a [MariaDB-Galera Cluster](https://mariadb.com/kb/en/mariadb/what-is-mariadb-galera-cluster/).
+Forked from https://github.com/mrlesmithjr/ansible-mariadb-galera-cluster 
 
 ## Build Status
 
@@ -60,8 +61,7 @@ MIT
 
 ## Author Information
 
-Larry Smith Jr.
+Nils Berg
 
--   @mrlesmithjr
--   <http://everythingshouldbevirtual.com>
--   mrlesmithjr [at] gmail.com
+-   nils.berg [at] helmholtz-berlin.de
+-   n.berg [at] backslashseven.de
