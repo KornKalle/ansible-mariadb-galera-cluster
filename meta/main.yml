@@ -1,15 +1,15 @@
 ---
 galaxy_info:
-  author: Larry Smith Jr.
-  description: An [Ansible](https://www.ansible.com) role to install/configure a [MariaDB-Galera Cluster](https://mariadb.com/kb/en/mariadb/what-is-mariadb-galera-cluster/)
+  author: Nils Berg
+  description: An [Ansible](https://www.ansible.com) role to install/configure a [MariaDB-Galera Cluster](https://mariadb.com/kb/en/mariadb/what-is-mariadb-galera-cluster/), based on role from Larry Smith Jr.
 
   license: MIT
 
-  min_ansible_version: 1.2
+  min_ansible_version: 2.9
   platforms:
     - name: EL
       versions:
-        - 7
+        - 8
     - name: Ubuntu
       versions:
         - precise
