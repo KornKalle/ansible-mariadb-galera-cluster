@@ -1,10 +1,6 @@
 ---
 # defaults file for ansible-mariadb-galera-cluster
 
-# Define the cacti user info for cacti db monitoring - If used. May remove later.
-cacti_db_password: "cactiuser"
-cacti_db_user: "cactiuser"
-
 # Defines if root logins should be allowed from any host
 galera_allow_root_from_any: false
 
