@@ -49,7 +49,7 @@
   yum:
     name:
       - "MariaDB-server"
-      - "galera"
+      - "galera-4"
     state: "present"
   become: true
   when: >
