@@ -7,7 +7,7 @@
 
 - name: Add MariaDB Repository
   yum_repository:
-    name: name MariaDB
+    name: MariaDB
     description: Official MariaDB Repository
     baseurl: "{{ mariadb_repo_url }}"
     gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
