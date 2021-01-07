@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Nils Berg
-  description: An Ansible] role to install/configure a MariaDB-Galera Cluster, based on role from Larry Smith Jr.
+  description: An Ansible role to install/configure a MariaDB-Galera Cluster, based on role from Larry Smith Jr.
   license: MIT
   min_ansible_version: 2.9
   platforms:
