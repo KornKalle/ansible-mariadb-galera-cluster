@@ -1,13 +1,15 @@
 ---
 
-- name: set wsrep Provider for galera 4 on EL 8
+- name: set wsrep Provider for galera 4 and systemd service name on EL 8
   set_fact:
     galera_wsrep_provider: "/usr/lib64/galera-4/libgalera_smm.so"
+    mariadb_systemd_service_name: "mariadb"
   when: ansible_os_family == "RedHat"
 
 - name: set wsrep Provider for Debian
   set_fact:
     galera_wsrep_provider: "/usr/lib/galera/libgalera_smm.so"
+    mariadb_systemd_service_name: "mysql"
   when: ansible_os_family == "Debian"
 
 - name: setup_cluster | checking if galera cluster setup
@@ -39,7 +41,7 @@
 
 - name: setup_cluster | stopping mysql
   service:
-    name: "mysql"
+    name: "{{ mariadb_systemd_service_name }}"
     state: "stopped"
   become: true
   when: not galera_cluster_configured.stat.exists
@@ -72,38 +74,6 @@
     not galera_cluster_configured.stat.exists and
     inventory_hostname == galera_mysql_master_node
 
-- name: setup_cluster | bootstrapping galera cluster
-  service:
-    name: "mysql"
-    state: "restarted"
-  become: true
-  when: >
-    (ansible_distribution == "Debian" or
-    (ansible_distribution == "Ubuntu" and
-    ansible_distribution_version <= '14.04')) and
-    not galera_cluster_configured.stat.exists and
-    inventory_hostname == galera_mysql_master_node
-
-- name: setup_cluster | bootstrapping galera cluster
-  command: "/usr/bin/galera_new_cluster"
-  become: true
-  when: >
-    not galera_cluster_configured.stat.exists and
-    inventory_hostname == galera_mysql_master_node and
-    ((ansible_distribution == "Ubuntu" and
-    ansible_distribution_version >= '16.04')
-    or ansible_distribution == "Debian"
-    or ansible_os_family == "RedHat")
-
-- name: setup_cluster | joining galera cluster
-  service:
-    name: "mysql"
-    state: "restarted"
-  become: true
-  when: >
-    not galera_cluster_configured.stat.exists and
-    inventory_hostname != galera_mysql_master_node
-
 - name: setup_cluster | configuring galera on mysql_master
   template:
     src: "etc/mysql/conf.d/galera.cnf.j2"
@@ -128,9 +98,45 @@
     not galera_cluster_configured.stat.exists and
     inventory_hostname == galera_mysql_master_node
 
-- name: setup_cluster | restarting galera on mysql_master
+- name: setup_cluster | bootstrapping galera cluster on Debian
   service:
     name: "mysql"
+    state: "restarted"
+  become: true
+  when: >
+    (ansible_distribution == "Debian" or
+    (ansible_distribution == "Ubuntu" and
+    ansible_distribution_version <= '14.04')) and
+    not galera_cluster_configured.stat.exists and
+    inventory_hostname == galera_mysql_master_node
+
+- name: setup_cluster | bootstrapping galera cluster on RedHat
+  command: "/usr/bin/galera_new_cluster"
+  become: true
+  when: >
+    not galera_cluster_configured.stat.exists and
+    inventory_hostname == galera_mysql_master_node and
+    ((ansible_distribution == "Ubuntu" and
+    ansible_distribution_version >= '16.04')
+    or ansible_distribution == "Debian"
+    or ansible_os_family == "RedHat")
+
+- name: A helpful reminder of what to look out for post-update
+  pause:
+    prompt: "Make sure org.foo.FooOverload exception is not present"
+
+- name: setup_cluster | joining galera cluster
+  service:
+    name: "{{ mariadb_systemd_service_name }}"
+    state: "restarted"
+  become: true
+  when: >
+    not galera_cluster_configured.stat.exists and
+    inventory_hostname != galera_mysql_master_node
+
+- name: setup_cluster | restarting galera on mysql_master
+  service:
+    name: "{{ mariadb_systemd_service_name }}"
     state: "restarted"
   become: true
   when: >
@@ -150,7 +156,7 @@
 # Only restart if cluster has already been configured
 - name: setup_cluster | Restarting MySQL (Master)
   service:
-    name: "mysql"
+    name: "{{ mariadb_systemd_service_name }}"
     state: "restarted"
   become: true
   register: "_mariadb_galera_cluster_master_restarted"
@@ -173,7 +179,7 @@
 # Only restart if cluster has already been configured
 - name: setup_cluster | Restarting MySQL (Non-Master)
   service:
-    name: "mysql"
+    name: "{{ mariadb_systemd_service_name }}"
     state: "restarted"
   become: true
   register: "_mariadb_galera_cluster_non_master_restarted"
