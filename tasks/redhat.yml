@@ -5,12 +5,14 @@
   set_fact:
     mariadb_repo_url: http://yum.mariadb.org/10.5/centos8-amd64
 
-- name: Add MariaDB Repository
-  yum_repository:
-    name: MariaDB
-    description: Official MariaDB Repository
-    baseurl: "{{ mariadb_repo_url }}"
-    gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+- name: redhat | adding mariadb repo
+  template:
+    src: "etc/yum.repos.d/MariaDB.repo.j2"
+    dest: "/etc/yum.repos.d/MariaDB.repo"
+    owner: "root"
+    group: "root"
+  become: true
+  register: repo_added
 
 - name: redhat | installing pre-reqs
   yum:

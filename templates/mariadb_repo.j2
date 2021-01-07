@@ -1,3 +1,6 @@
-Package: mariadb-*
-Pin: origin {{ mariadb_debian_repo_pin }}
-Pin-Priority: 600
+[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/{{ mariadb_version }}/centos8-amd64
+module_hotfixes=1
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
