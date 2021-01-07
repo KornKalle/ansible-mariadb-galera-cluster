@@ -76,10 +76,3 @@
   become: true
   systemd:
     daemon_reload: true
-
-- name: redhat | ensuring mariadb mysql is enabled on boot and started
-  service:
-    name: "mariadb"
-    state: "started"
-    enabled: yes
-  become: true
