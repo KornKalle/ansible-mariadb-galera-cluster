@@ -1,0 +1,5 @@
+inventory
+group_vars/**
+group_vars/all.yml
+.vaultpassword
+development.yml
