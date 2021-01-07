@@ -1,5 +1,6 @@
 [mariadb]
 name = MariaDB
-baseurl = {{ mariadb_redhat_repo }}
-gpgkey={{ mariadb_redhat_repo_key }}
+baseurl = http://yum.mariadb.org/{{ mariadb_version }}/centos8-amd64
+module_hotfixes=1
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
