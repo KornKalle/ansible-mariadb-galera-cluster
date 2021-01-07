@@ -1,23 +1,11 @@
 ---
 
-- name: set wsrep Provider for galera 4 and systemd service name on EL 8
-  set_fact:
-    galera_wsrep_provider: "/usr/lib64/galera-4/libgalera_smm.so"
-    mariadb_systemd_service_name: "mariadb"
-  when: ansible_os_family == "RedHat"
-
-- name: set wsrep Provider for Debian
-  set_fact:
-    galera_wsrep_provider: "/usr/lib/galera/libgalera_smm.so"
-    mariadb_systemd_service_name: "mysql"
-  when: ansible_os_family == "Debian"
-
 - name: setup_cluster | checking if galera cluster setup
   stat:
     path: "/etc/galera_cluster_configured"
   register: "galera_cluster_configured"
 
-- name: setup_cluster | configuring db server and galera
+- name: Debian | configuring db server and galera
   template:
     src: "{{ item }}.j2"
     dest: "/{{ item }}"
@@ -29,7 +17,7 @@
     - "etc/mysql/conf.d/galera.cnf"
   when: ansible_os_family == "Debian"
 
-- name: setup_cluster | configuring db server and galera
+- name: RedHat | configuring db server and galera
   template:
     src: "{{ item }}.j2"
     dest: "/{{ item }}"
@@ -39,12 +27,31 @@
     - "etc/my.cnf.d/server.cnf"
   when: ansible_os_family == "RedHat"
 
-- name: setup_cluster | stopping mysql
+- name: setup_cluster | stop galera on workers
   service:
     name: "{{ mariadb_systemd_service_name }}"
     state: "stopped"
   become: true
-  when: not galera_cluster_configured.stat.exists
+  when: >
+    not galera_cluster_configured.stat.exists and
+    inventory_hostname != galera_mysql_master_node
+
+- name: Allow workers to stop gracefully
+  pause:
+    seconds: 10
+
+- name: setup_cluster | stop galera on mysql_master
+  service:
+    name: "{{ mariadb_systemd_service_name }}"
+    state: "stopped"
+  become: true
+  when: >
+    not galera_cluster_configured.stat.exists and
+    inventory_hostname == galera_mysql_master_node
+
+- name: Allow master to stop gracefully
+  pause:
+    seconds: 10
 
 - name: setup_cluster | killing lingering mysql processes
   command: "pkill mysqld"
@@ -52,29 +59,7 @@
   ignore_errors: true
   when: not galera_cluster_configured.stat.exists
 
-- name: setup_cluster | configuring temp galera config
-  template:
-    src: "etc/mysql/conf.d/temp.galera.cnf.j2"
-    dest: "/etc/mysql/conf.d/galera.cnf"
-  become: true
-  when: >
-    (ansible_distribution == "Debian" or
-    (ansible_distribution == "Ubuntu" and
-    ansible_distribution_version <= '14.04')) and
-    not galera_cluster_configured.stat.exists and
-    inventory_hostname == galera_mysql_master_node
-
-- name: setup_cluster | configuring temp galera config
-  template:
-    src: "etc/my.cnf.d/temp.server.cnf.j2"
-    dest: "/etc/my.cnf.d/server.cnf"
-  become: true
-  when: >
-    ansible_os_family == "RedHat" and
-    not galera_cluster_configured.stat.exists and
-    inventory_hostname == galera_mysql_master_node
-
-- name: setup_cluster | configuring galera on mysql_master
+- name: Debian | configuring galera on mysql_master
   template:
     src: "etc/mysql/conf.d/galera.cnf.j2"
     dest: "/etc/mysql/conf.d/galera.cnf"
@@ -87,7 +72,7 @@
     not galera_cluster_configured.stat.exists and
     inventory_hostname == galera_mysql_master_node
 
-- name: setup_cluster | configuring galera on mysql_master
+- name: RedHat | configuring galera on mysql_master
   template:
     src: "etc/my.cnf.d/server.cnf.j2"
     dest: "/etc/my.cnf.d/server.cnf"
@@ -98,32 +83,16 @@
     not galera_cluster_configured.stat.exists and
     inventory_hostname == galera_mysql_master_node
 
-- name: setup_cluster | bootstrapping galera cluster on Debian
-  service:
-    name: "mysql"
-    state: "restarted"
-  become: true
-  when: >
-    (ansible_distribution == "Debian" or
-    (ansible_distribution == "Ubuntu" and
-    ansible_distribution_version <= '14.04')) and
-    not galera_cluster_configured.stat.exists and
-    inventory_hostname == galera_mysql_master_node
-
-- name: setup_cluster | bootstrapping galera cluster on RedHat
+- name: setup_cluster | bootstrap galera cluster
   command: "/usr/bin/galera_new_cluster"
   become: true
   when: >
     not galera_cluster_configured.stat.exists and
-    inventory_hostname == galera_mysql_master_node and
-    ((ansible_distribution == "Ubuntu" and
-    ansible_distribution_version >= '16.04')
-    or ansible_distribution == "Debian"
-    or ansible_os_family == "RedHat")
+    inventory_hostname == galera_mysql_master_node
 
-- name: A helpful reminder of what to look out for post-update
+- name: Allow masters to bootstrap gracefully
   pause:
-    prompt: "Make sure org.foo.FooOverload exception is not present"
+    seconds: 5
 
 - name: setup_cluster | joining galera cluster
   service:
