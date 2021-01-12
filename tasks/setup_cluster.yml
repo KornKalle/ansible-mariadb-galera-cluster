@@ -39,6 +39,8 @@
 - name: Allow workers to stop gracefully
   pause:
     seconds: 10
+  when: >
+    not galera_cluster_configured.stat.exists
 
 - name: setup_cluster | stop galera on mysql_master
   service:
@@ -52,6 +54,8 @@
 - name: Allow master to stop gracefully
   pause:
     seconds: 10
+  when: >
+    not galera_cluster_configured.stat.exists
 
 - name: setup_cluster | killing lingering mysql processes
   command: "pkill mysqld"
@@ -93,6 +97,8 @@
 - name: Allow masters to bootstrap gracefully
   pause:
     seconds: 5
+  when: >
+    not galera_cluster_configured.stat.exists
 
 - name: setup_cluster | joining galera cluster
   service:
