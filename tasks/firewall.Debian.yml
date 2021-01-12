@@ -1,0 +1,3 @@
+- name: fail on Debian (currently not supported)
+  fail:
+    msg: Firewall configuration is currently only implemented for RHEL / CentOS 8

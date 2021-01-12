@@ -1,20 +1,32 @@
 ---
 # defaults file for ansible-mariadb-galera-cluster
 
+#
+## Galera Networking config
+#
+
 # Defines if root logins should be allowed from any host
 galera_allow_root_from_any: false
-
 # Define bind address for galera cluster
 galera_cluster_bind_address: "{{ hostvars[inventory_hostname]['ansible_' + galera_cluster_bind_interface]['ipv4']['address'] }}"
-
 # bind address for MariaDB's 3306 port.
 # By default takes the value of the galera cluster IP, but can be overriden
 # to 0.0.0.0 (for example) to allow MySQL connections to localhost
 mariadb_bind_address: "{{ galera_cluster_bind_address }}"
-
 # Define interface in which to bind
 # ex. eth0|eth1|enp0s3|enp0s8
 galera_cluster_bind_interface: "enp0s8"
+
+#
+## Firewall
+#
+
+#TODO: add support for Debian
+# Currently only supported on CentOS / Firewalld
+galera_cluster_configure_firewall: no
+# Defaulting to access from everywhere
+galera_cluster_configure_firewall_external_access:
+  - 0.0.0.0/0
 
 # Define the name of the cluster
 galera_cluster_name: "vagrant-test"

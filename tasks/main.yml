@@ -16,6 +16,18 @@
       'galera_cluster_bind_interface' does not exist on the target host.
       Available interfaces are: {{ ansible_interfaces | join(',') }}.
 
+- name: Configure Firewalld on CentOS
+  include: firewall.RedHat.yml
+  when: >
+    galera_cluster_configure_firewall and
+    ansible_os_family == 'RedHat'
+
+- name: Configure UFW on Debian
+  include: firewall.Debian.yml
+  when: >
+    galera_cluster_configure_firewall and
+    ansible_os_family == 'Debian'
+
 - include: unconfigure_cluster.yml
   when: >
     galera_reconfigure_galera is defined and

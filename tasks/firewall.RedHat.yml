@@ -1,0 +1,23 @@
+- name: Enable firewalld
+  systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: Allow cluster internal replication traffic
+  ansible.posix.firewalld:
+    rich_rule: "rule family=ipv4 source address={{ hostvars[item]['ansible_' + galera_cluster_bind_interface]['ipv4']['address'] }}/32 port protocol=tcp port=4657 accept"
+    permanent: yes
+    immediate: yes
+    state: enabled
+  with_items:
+    - "{{ groups['galera-cluster-nodes'] }}"
+
+- name: Allow cluster external access
+  ansible.posix.firewalld:
+    rich_rule: "rule family=ipv4 source address={{ item }} port protocol=tcp port=3306 accept"
+    permanent: yes
+    immediate: yes
+    state: enabled
+  with_items:
+    - "{{ galera_cluster_firewall_external_access_ips }}"
