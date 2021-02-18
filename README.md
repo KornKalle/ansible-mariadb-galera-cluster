@@ -2,14 +2,9 @@
 
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-**Table of Contents**  _generated with [DocToc](https://github.com/thlorenz/doctoc)_
-
 -   [ansible-mariadb-galera-cluster](#ansible-mariadb-galera-cluster)
-    -   [Build Status](#build-status)
     -   [Requirements](#requirements)
-    -   [Vagrant](#vagrant)
     -   [Role Variables](#role-variables)
-    -   [Dependencies](#dependencies)
     -   [Example Playbook](#example-playbook)
     -   [License](#license)
     -   [Author Information](#author-information)
@@ -19,37 +14,27 @@
 # ansible-mariadb-galera-cluster
 
 An [Ansible](https://www.ansible.com) role to install/configure a [MariaDB-Galera Cluster](https://mariadb.com/kb/en/mariadb/what-is-mariadb-galera-cluster/).
-Forked from https://github.com/mrlesmithjr/ansible-mariadb-galera-cluster 
+Forked from https://github.com/mrlesmithjr/ansible-mariadb-galera-cluster.
 
-## Build Status
-
-[![Build Status](https://travis-ci.org/mrlesmithjr/ansible-mariadb-galera-cluster.svg?branch=master)](https://travis-ci.org/mrlesmithjr/ansible-mariadb-galera-cluster)
+This Role will install and configure a mariadb-cluster with all nodes in the group "galera-cluster" (The group name is overwritable).
 
 ## Requirements
 
-None
-
-## Vagrant
-
-Spin up a test 3-node cluster using Vagrant....
-
-```bash
-git clone https://github.com/mrlesmithjr/ansible-mariadb-galera-cluster.git
-cd Vagrant
-vagrant up
-```
-
-When you are done testing tear it all down....
-
-```bash
-./cleanup.sh
-```
+- Ansible >= 2.7
+- python3-libselinux for CentOS / RHEL
 
 ## Role Variables
 
-[defaults/main.yml](defaults/main.yml)
+You will most likely need to override the interface on which MariaDB will listen on, as this name depends on your virtualization / hardware platform:
 
-## Dependencies
+    galera_cluster_bind_interface: "enp0s8"
+
+The mariadb_bind_address will be calculated from the address of the interface you defined at the galera_cluster_bind_interface variable.
+You can also directly set a bind address when overriding the variable mariadb_bind_address:
+
+    mariadb_bind_address: 0.0.0.0
+
+All Role variables are found at [defaults/main.yml](defaults/main.yml), you can override all of them, the default values will work in a clean environment.
 
 ## Example Playbook
 

@@ -3,7 +3,7 @@
 
 - name: CentOS 8 | set MariaDB repository link
   set_fact:
-    mariadb_repo_url: http://yum.mariadb.org/10.5/centos8-amd64
+    mariadb_repo_url: http://yum.mariadb.org/{{ mariadb_version}}/centos8-amd64
 
 - name: redhat | adding mariadb repo
   template:
